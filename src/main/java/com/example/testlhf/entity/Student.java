@@ -39,7 +39,7 @@ public class Student implements Serializable {
     private String name;
 
     private Integer age;
-    @JsonFormat(pattern = "yyyyMMdd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime birthdayTime;

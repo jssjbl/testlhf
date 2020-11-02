@@ -1,5 +1,9 @@
 package com.example.testlhf.filter;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.example.testlhf.common.Head;
+import com.example.testlhf.entity.Student;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ReadListener;
@@ -7,12 +11,12 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Map;
 
 /**
  * @Description TODO
@@ -25,12 +29,10 @@ public class ChangeTenantIdRequestWrapper extends HttpServletRequestWrapper {
     /**
      * 存储body数据的容器
      */
-    private  byte[] body;
-    private Map<String, String[]> parameterMap; // 所有参数的Map集合
+    private byte[] body;
 
     public ChangeTenantIdRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
-        parameterMap = request.getParameterMap();
         // 将body数据存储起来
         String bodyStr = getBodyString(request);
         body = bodyStr.getBytes(Charset.defaultCharset());
@@ -90,7 +92,14 @@ public class ChangeTenantIdRequestWrapper extends HttpServletRequestWrapper {
                 }
             }
         }
-
+        JSONObject jsonObject = JSONObject.parseObject(sb.toString());
+        if (jsonObject != null && jsonObject.get("student") != null) {
+            Student student = JSON.toJavaObject((JSON) jsonObject.get("student"), Student.class);
+            log.info("修改之前的学生名称为：" + student.getName());
+            student.setName("yyf2");
+            jsonObject.put("student", student);
+            return jsonObject.toJSONString();
+        }
         return sb.toString();
     }
 
@@ -124,50 +133,5 @@ public class ChangeTenantIdRequestWrapper extends HttpServletRequestWrapper {
             public void setReadListener(ReadListener readListener) {
             }
         };
-    }
-
-    @Override
-    public Enumeration<String> getParameterNames() {
-        Enumeration<String> enumeration = super.getParameterNames();
-        ArrayList<String> list = Collections.list(enumeration);
-        //将tenantId字段值改写
-        return super.getParameterNames();
-    }
-
-    /**
-     * 获取指定参数名的值，如果有重复的参数名，则返回第一个的值 接收一般变量 ，如text类型
-     *
-     * @param name 指定参数名
-     * @return 指定参数名的值
-     */
-    @Override
-    public String getParameter(String name) {
-        String[] results = parameterMap.get(name);
-        return results[0];
-    }
-
-    /**
-     * 获取指定参数名的所有值的数组，如：checkbox的所有数据
-     * 接收数组变量 ，如checkobx类型
-     */
-    @Override
-    public String[] getParameterValues(String name) {
-        return parameterMap.get(name);
-    }
-
-    @Override
-    public Map<String, String[]> getParameterMap() {
-        return parameterMap;
-    }
-
-    public void setParameterMap(Map<String, String[]> parameterMap) {
-        this.parameterMap = parameterMap;
-    }
-    public byte[]  getBody() {
-        return this.body;
-    }
-
-    public void setBody(byte[] body) {
-        this.body = body;
     }
 }

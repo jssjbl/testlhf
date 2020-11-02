@@ -7,9 +7,6 @@ package com.example.testlhf.filter;
  * @Version 1.0
  **/
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.example.testlhf.common.Head;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -27,14 +24,7 @@ public class ChangeTenantIdInterceptor implements HandlerInterceptor {
             // 获取json字符串
             ChangeTenantIdRequestWrapper changeTenantIdRequestWrapper = new ChangeTenantIdRequestWrapper(request);
             String jsonParam = changeTenantIdRequestWrapper.getBodyString();
-            JSONObject jsonObject = JSONObject.parseObject(jsonParam);
-            Head head = JSON.toJavaObject((JSON) jsonObject.get("head"), Head.class);
-            log.info("修改之前的登录用户名称为：" + head.getLogInUserName());
-            head.setLogInUserName("yyf2");
-            jsonObject.put("head", head);
-            changeTenantIdRequestWrapper.setBody(jsonObject.toJSONString().getBytes());
             log.info("[preHandle] json数据 : {}", jsonParam);
-
             // 验签逻辑...略...
         }
 
