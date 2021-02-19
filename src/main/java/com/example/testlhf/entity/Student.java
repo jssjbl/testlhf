@@ -3,6 +3,7 @@ package com.example.testlhf.entity;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.example.testlhf.utils.JacksonUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -39,9 +40,9 @@ public class Student implements Serializable {
     private String name;
 
     private Integer age;
-    @JsonFormat(pattern = "yyyy-MM-dd")
+//    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime birthdayTime;
     private LocalDateTime happyTime;
 
@@ -49,7 +50,7 @@ public class Student implements Serializable {
         Student student = new Student();
         student.setName("ww");
         student.setBirthday(LocalDate.now());
-        System.out.println(JSON.toJSONString(student));
+        System.out.println(JacksonUtil.toJSon(student));
     }
 
 }
